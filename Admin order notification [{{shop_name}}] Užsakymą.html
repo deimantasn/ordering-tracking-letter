@@ -1,0 +1,33 @@
+Admin order notification [{{shop_name}}] Užsakymą {{ name }} pateikė {{ billing_address.name }}{% if has_high_risks? %} (Rizikingas arba apgaulingas){% endif %}
+
+<p>Sveiki {{ shop_name }},</p>
+<p></p>
+<p>{% if customer.name %}{{ customer.name }}{% else %}Kažkas{% endif %} pateikė užsakymą www.apatite.lt parduotuvėje, {{ date | date: "%b %d %I:%M%p" }}:</p>
+<p></p>
+<ul>  {% for line in line_items %} <li> <img src="{{ line | img_url: 'thumb' }}" /> {{ line.quantity }}x {{ line.title }} {% if line.sku != "" %}(SKU: {{line.sku}}){% endif %} for {{ line.price | money }} kiekvienas </li> {% endfor %} </ul>
+<a href="https://{{ shop.permanent_domain }}/admin/orders/{{ id }}">Peržiūrėti užsakymą {{order_name}} </a>
+{% if fulfillment_aborted %}
+<p>Aukščiau paminėtas užsakymas nebuvo automatiškai įvykdyti, nes jis buvo pažymėtas kaip įtartinas.</p>{% endif %}
+<p></p><br>
+{% if has_high_risks? %}<p><b>Saugumo patikrinimas:</b></p>
+<p>Šis užsakymas gali būti apgaulingas ir rizikingas. Peržvelkite savo parduotuvės admin paskyroje užsakymą ir susisiekti su klientu, kad patikrintų savo informaciją.</p>
+<p></p>{% endif %}
+<p><b>Pasirinktas mokėjimo būdas:</b></p>
+<p>{{ gateway }}</p>
+<p></p>
+{% if requires_shipping and shipping_address %}
+<p><b>Pristatymo būdas:</b></p>
+{% for shipping_method in shipping_methods %}<p>{{ shipping_method.title }}</p>{% endfor %}
+<p></p>
+<p><b>Pristatymo adresas:</b></p>
+<p>{{ shipping_address.name }}</p>
+<p>{{ shipping_address.street }}</p>
+<p>{{ shipping_address.city }}, {{ shipping_address.province }}  {{ shipping_address.zip }}</p>
+<p>{{ shipping_address.country }}</p>
+<p>{{ shipping_address.phone }}{% endif %}</p>
+<p></p>
+
+{% if shopify_shipping_enabled %}
+<p>Sutaupykite laiko ir pinigų <a href="{{ fulfillment_url }}">vykdant su Shopify Shipping</a></p>
+<p></p>
+{% endif %}
